@@ -1,6 +1,6 @@
-name: super-cool-app
+name: emma-pay
 version: 0.1.0
-summary: Super Cool App
+summary: Emma Pay
 description: Super Cool App that does everything!
 
 confinement: strict
@@ -8,21 +8,21 @@ base: core18
 grade: stable
 
 slots:
-  dbus-super-cool-app: # adjust accordingly to your app name
+  dbus-emma-pay: # adjust accordingly to your app name
     interface: dbus
     bus: session
-    name: org.bar.super_cool_app # adjust accordingly to your app name and
+    name: io.emmalabs.emma_pay # adjust accordingly to your app name and
     
 apps:
-  super-cool-app:
-    command: super_cool_app
+  emma-pay:
+    command: emma-pay
     extensions: [flutter-master] # Where "master" defines which Flutter channel to use for the build
     plugs:
     - network
     slots:
-      - dbus-super-cool-app
+      - dbus-emma-pay
 parts:
-  super-cool-app:
+  emma-pay:
     source: .
     plugin: flutter
     flutter-target: lib/main.dart # The main entry-point file of the application
