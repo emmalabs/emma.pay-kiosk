@@ -4,7 +4,7 @@ summary: Emma Pay
 description: Super Cool App that does everything!
 
 confinement: strict
-base: core20
+base: core18
 grade: stable
 
 architectures:
