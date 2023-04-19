@@ -19,7 +19,7 @@ slots:
     
 apps:
   emma-pay:
-    command: emma_pay
+    command: emmapay
     extensions: [flutter-master] # Where "master" defines which Flutter channel to use for the build
     plugs:
     - network
