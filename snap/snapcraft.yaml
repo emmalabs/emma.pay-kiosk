@@ -4,27 +4,22 @@ summary: Emma Pay
 description: Super Cool App that does everything!
 
 confinement: strict
-base: core18
+base: core22
 grade: stable
 
 architectures:
   - build-on: arm64
+    buid-for: arm64
   - build-on: amd64
+    build-for: amd64
 
-slots:
-  dbus-emma-pay: # adjust accordingly to your app name
-    interface: dbus
-    bus: session
-    name: io.emmalabs.emma_pay # adjust accordingly to your app name and
-    
 apps:
   emma-pay:
     command: emmapay
     extensions: [flutter-master] # Where "master" defines which Flutter channel to use for the build
     plugs:
     - network
-    slots:
-      - dbus-emma-pay
+
 parts:
   emma-pay:
     source: .

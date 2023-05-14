@@ -3,6 +3,9 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  connectivity_plus
+  network_info_plus
+  sys_stats
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST
