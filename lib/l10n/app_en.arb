@@ -1,0 +1,9 @@
+{
+    "clickedTime": "You have clicked the button this many times:",
+    "dashboard": "Dashboard",
+    "transactions": "Transactions",
+    "systemInfo": "System Info",
+    "settings": "Settings",
+    "reboot": "Reboot",
+    "close": "Close"
+}
