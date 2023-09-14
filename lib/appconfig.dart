@@ -1,16 +1,19 @@
-import 'package:flutter/material.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
+import 'package:uuid/uuid.dart';
 
-class AppConfig {
-  final int port;
+import 'database.dart';
 
-  AppConfig({required this.port});
+class Config {
+  int port;
+  String currency = 'EUR';
+  Uuid uuid = const Uuid();
+
+  Config({required this.port});
 }
 
 class AppConfigSingleton {
   static final AppConfigSingleton _singleton = AppConfigSingleton._internal();
-  AppConfig _config = AppConfig(port: 88);
+  final _config = Config(port: 88);
+  final _db = AppDatabase();
 
   factory AppConfigSingleton() {
     return _singleton;
@@ -19,53 +22,10 @@ class AppConfigSingleton {
   AppConfigSingleton._internal();
 
   Future<void> init() async {
-    sqfliteFfiInit();
-
-    final database = await openDatabase(
-      join(await getDatabasesPath(), 'data.db'),
-      onCreate: (db, version) {
-        return db.execute(
-          'CREATE TABLE app_config(key TEXT PRIMARY KEY, value TEXT)',
-        );
-      },
-      version: 1,
-    );
-
-    final List<Map<String, dynamic>> maps = await database.query('app_config');
-
-    if (maps.isNotEmpty) {
-      final port = maps.firstWhere((map) => map['key'] == 'port')['value'];
-
-      _config = AppConfig(
-        port: port,
-      );
-    } else {
-      await database.transaction((txn) async {
-        await txn.insert(
-          'app_config',
-          {'key': 'port', 'value': _config.port},
-        );
-      });
-    }
+    int port = int.tryParse(await _db.getConfigValue('port')) ?? 0;
+    if (port > 0) _config.port = port;
   }
 
-  AppConfig get config => _config;
-
-  Future<void> updateConfig(AppConfig config) async {
-    _config = config;
-
-    final database = await openDatabase(
-      join(await getDatabasesPath(), 'data.db'),
-      version: 1,
-    );
-
-    await database.transaction((txn) async {
-      await txn.update(
-        'app_config',
-        {'value': config.port},
-        where: 'key = ?',
-        whereArgs: ['port'],
-      );
-    });
-  }
+  Config get config => _config;
+  AppDatabase get db => _db;
 }
