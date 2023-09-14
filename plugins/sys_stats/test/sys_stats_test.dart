@@ -7,9 +7,14 @@ import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 class MockSysStatsPlatform
     with MockPlatformInterfaceMixin
     implements SysStatsPlatform {
-
   @override
   Future<String?> getPlatformVersion() => Future.value('42');
+
+  @override
+  Future<Map<Object?, Object?>?> getStats() {
+    // TODO: implement getStats
+    throw UnimplementedError();
+  }
 }
 
 void main() {

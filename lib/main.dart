@@ -4,8 +4,28 @@ import 'package:emmapay/transactions.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:shelf/shelf.dart';
+import 'package:shelf/shelf_io.dart' as shelf_io;
 
-void main() {
+import 'dart:convert';
+import 'dart:developer' as developer;
+
+import 'service.dart';
+import 'appconfig.dart';
+
+void main() async {
+  // Initialize the AppConfigSingleton
+  await AppConfigSingleton().init();
+
+  // Get the Singleton instance of AppConfig
+  final config = AppConfigSingleton().config;
+
+  final service = Service();
+
+  final server = await shelf_io.serve(service.handler, 'localhost', config.port);
+  developer.log('Serving at http://${server.address.host}:${server.port}');
+  print('Serving at http://${server.address.host}:${server.port}');
+
   runApp(const MyApp());
 }
 
@@ -100,81 +120,70 @@ class _MyHomePageState extends State<MyHomePage> {
       persistentFooterButtons: [
         Visibility(
             visible: true,
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+              Column(
                 children: [
-                  Column(
-                    children: [
-                      IconButton(
-                          icon: const FaIcon(FontAwesomeIcons.chartSimple),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const Dashboard()),
-                            );
-                          }),
-                      Text(AppLocalizations.of(context)!.dashboard),
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      IconButton(
-                          icon: const FaIcon(FontAwesomeIcons.fileLines),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const Transactions()),
-                            );
-                          }),
-                      Text(AppLocalizations.of(context)!.transactions),
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      IconButton(
-                          icon: const FaIcon(FontAwesomeIcons.microchip),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const SystemInfo()),
-                            );
-                          }),
-                      Text(AppLocalizations.of(context)!.systemInfo),
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      IconButton(
-                          icon: const FaIcon(FontAwesomeIcons.gear),
-                          onPressed: () {}),
-                      Text(AppLocalizations.of(context)!.settings),
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      IconButton(
-                          icon: const FaIcon(FontAwesomeIcons.rotate),
-                          onPressed: () {}),
-                      Text(AppLocalizations.of(context)!.reboot),
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      IconButton(
-                          icon: const FaIcon(FontAwesomeIcons.circleXmark),
-                          color: Colors.red,
-                          onPressed: () {
-                            MyApp.setLocale(context, const Locale('en'));
-                          }),
-                      Text(
-                          style: const TextStyle(color: Colors.red),
-                          AppLocalizations.of(context)!.close),
-                    ],
-                  ),
-                ]))
+                  IconButton(
+                      icon: const FaIcon(FontAwesomeIcons.chartSimple),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const Dashboard()),
+                        );
+                      }),
+                  Text(AppLocalizations.of(context)!.dashboard),
+                ],
+              ),
+              Column(
+                children: [
+                  IconButton(
+                      icon: const FaIcon(FontAwesomeIcons.fileLines),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const Transactions()),
+                        );
+                      }),
+                  Text(AppLocalizations.of(context)!.transactions),
+                ],
+              ),
+              Column(
+                children: [
+                  IconButton(
+                      icon: const FaIcon(FontAwesomeIcons.microchip),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const SystemInfo()),
+                        );
+                      }),
+                  Text(AppLocalizations.of(context)!.systemInfo),
+                ],
+              ),
+              Column(
+                children: [
+                  IconButton(icon: const FaIcon(FontAwesomeIcons.gear), onPressed: () {}),
+                  Text(AppLocalizations.of(context)!.settings),
+                ],
+              ),
+              Column(
+                children: [
+                  IconButton(icon: const FaIcon(FontAwesomeIcons.rotate), onPressed: () {}),
+                  Text(AppLocalizations.of(context)!.reboot),
+                ],
+              ),
+              Column(
+                children: [
+                  IconButton(
+                      icon: const FaIcon(FontAwesomeIcons.circleXmark),
+                      color: Colors.red,
+                      onPressed: () {
+                        MyApp.setLocale(context, const Locale('en'));
+                      }),
+                  Text(style: const TextStyle(color: Colors.red), AppLocalizations.of(context)!.close),
+                ],
+              ),
+            ]))
       ],
     );
   }
